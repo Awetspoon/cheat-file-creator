@@ -14,7 +14,7 @@ from ...ui.style import (
     PANEL_INNER_PAD_X,
     PANEL_INNER_PAD_Y,
 )
-from ...ui.widgets import AutoScrollbar, Scrollable, configure_listbox_theme
+from ...ui.widgets import AutoScrollbar, configure_listbox_theme
 
 
 def dialog_palette(app) -> dict[str, str]:
@@ -89,13 +89,6 @@ def bind_dialog_shortcuts(
         window.bind("<Return>", lambda _event: confirm(), add="+")
     if cancel is not None:
         window.bind("<Escape>", lambda _event: cancel(), add="+")
-
-
-def build_dialog_scroll_body(app, window: tk.Toplevel) -> Scrollable:
-    scrollable = Scrollable(window)
-    scrollable.pack(fill="both", expand=True)
-    scrollable.set_canvas_bg(dialog_palette(app)["bg"])
-    return scrollable
 
 
 def build_dialog_header(
@@ -174,62 +167,6 @@ def build_dialog_footer(
         pack_options["side"] = side
     footer.pack(**pack_options)
     return footer
-
-
-def build_dialog_card(
-    app,
-    parent,
-    title: str,
-    detail: str | None = None,
-    *,
-    fill: str = "x",
-    expand: bool = False,
-    padx: int = PANEL_INNER_PAD_X,
-    pady: tuple[int, int] = (0, PANEL_GAP),
-    content_fill: str = "x",
-    content_expand: bool = False,
-) -> tk.Frame:
-    palette = dialog_palette(app)
-    card = tk.Frame(
-        parent,
-        bg=palette["panel"],
-        bd=0,
-        highlightthickness=1,
-        highlightbackground=palette["border"],
-        highlightcolor=palette["border"],
-    )
-    card._dialog_surface = "panel"  # type: ignore[attr-defined]
-    card.pack(fill=fill, expand=expand, padx=padx, pady=pady)
-
-    title_label = tk.Label(
-        card,
-        text=title,
-        bg=palette["panel"],
-        fg=palette["text"],
-        font=FONT_SECTION,
-        anchor="w",
-    )
-    title_label._dialog_text_role = "text"  # type: ignore[attr-defined]
-    title_label.pack(fill="x", padx=PANEL_INNER_PAD_X, pady=(PANEL_GAP, 2))
-
-    if detail:
-        detail_label = tk.Label(
-            card,
-            text=detail,
-            bg=palette["panel"],
-            fg=palette["muted"],
-            font=FONT_PANEL_TITLE,
-            anchor="w",
-            justify="left",
-            wraplength=820,
-        )
-        detail_label._dialog_text_role = "muted"  # type: ignore[attr-defined]
-        detail_label.pack(fill="x", padx=PANEL_INNER_PAD_X, pady=(0, PANEL_GAP))
-
-    body = tk.Frame(card, bg=palette["panel"], bd=0, highlightthickness=0)
-    body._dialog_surface = "panel"  # type: ignore[attr-defined]
-    body.pack(fill=content_fill, expand=content_expand)
-    return body
 
 
 def build_dialog_page_header(

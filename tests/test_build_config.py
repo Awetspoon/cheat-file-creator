@@ -31,10 +31,11 @@ class BuildConfigTests(unittest.TestCase):
     def test_pyinstaller_spec_references_packaged_runtime_paths(self):
         spec = (ROOT / "cheat_editor_manager_tool.spec").read_text(encoding="utf-8")
 
-        self.assertIn('"assets"', spec)
+        for asset_name in ("app-icon.ico", "app-icon.png", "icon-256.png", "mark-48.png"):
+            self.assertIn(f'"{asset_name}"', spec)
+        self.assertNotIn('(str(PROJECT_ROOT / "assets"), "assets")', spec)
         self.assertIn('"_tcl_data"', spec)
         self.assertIn('"_tk_data"', spec)
-        self.assertIn('"app-icon.ico"', spec)
 
 
 if __name__ == "__main__":

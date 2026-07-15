@@ -464,24 +464,8 @@ def _build_path_preview(app) -> None:
     app._path_preview_label.grid(row=1, column=0, sticky="ew", pady=(4, 0))
 
 
-def show_switch_layout(app, show: bool) -> None:
-    _set_layout_visible(app._switch_layout, show)
-
-
-def show_titleid_layout(app, show: bool) -> None:
-    _set_layout_visible(app._titleid_layout, show)
-
-
 def show_core_layout(app, show: bool) -> None:
     _set_layout_visible(app._retro_layout, show)
-
-
-def show_generic_layout(app, show: bool) -> None:
-    _set_layout_visible(app._generic_layout, show)
-
-
-def show_atmosphere_layout(app, show: bool) -> None:
-    _set_layout_visible(app._atmo_layout, show)
 
 
 def _set_layout_visible(layout: tk.Frame, show: bool) -> None:

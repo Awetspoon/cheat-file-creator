@@ -5,6 +5,16 @@ from pathlib import Path
 
 PROJECT_ROOT = Path.cwd()
 HOOKS_ROOT = PROJECT_ROOT / "hooks"
+RUNTIME_ASSET_NAMES = (
+    "app-icon.ico",
+    "app-icon.png",
+    "icon-256.png",
+    "mark-48.png",
+)
+RUNTIME_ASSETS = [
+    (str(PROJECT_ROOT / "assets" / asset_name), "assets")
+    for asset_name in RUNTIME_ASSET_NAMES
+]
 
 
 a = Analysis(
@@ -14,7 +24,7 @@ a = Analysis(
     datas=[
         (str(PROJECT_ROOT / "vendor" / "tcl" / "tcl8.6"), "_tcl_data"),
         (str(PROJECT_ROOT / "vendor" / "tcl" / "tk8.6"), "_tk_data"),
-        (str(PROJECT_ROOT / "assets"), "assets"),
+        *RUNTIME_ASSETS,
     ],
     hiddenimports=[
         "tkinter",

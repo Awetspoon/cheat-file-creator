@@ -11,6 +11,8 @@ class DocumentationTests(unittest.TestCase):
         readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
 
         self.assertIn("## Download", readme)
+        self.assertIn("checks GitHub for the latest published full release", readme)
+        self.assertIn("never downloads or installs", readme)
         self.assertIn("## What The Program Does", readme)
         self.assertIn("## Quick Start", readme)
         self.assertIn("## Supported Targets", readme)

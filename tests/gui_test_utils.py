@@ -36,7 +36,7 @@ def create_offscreen_root(width: int = 1280, height: int = 820) -> tk.Tk:
 
 
 def create_test_app() -> App:
-    app = App(root=create_offscreen_root())
+    app = App(root=create_offscreen_root(), enable_update_check=False)
     app.root.update_idletasks()
     app.root.update()
     return app

@@ -4,7 +4,7 @@ from pathlib import Path
 
 APP_NAME = "Cheat Editor Manager Tool"
 APP_TAGLINE = "Retro-ready cheat editing and export"
-APP_VERSION = "1.3.6"
+APP_VERSION = "1.4.0"
 
 APP_DIR = Path.home() / "CheatCreator"
 APP_DIR.mkdir(parents=True, exist_ok=True)

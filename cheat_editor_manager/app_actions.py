@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 
-from .export_logic import split_bids
 from .services import export_service
 from .services import retroarch_core_service
 from .services.file_load_service import load_file_into_app
@@ -33,9 +32,6 @@ class ExportFileActionsMixin:
 
     def _on_drop_files(self, event):
         return handle_drop_files(self, event)
-
-    def _split_bids(self, bids: str) -> list[str]:
-        return split_bids(bids)
 
     def _validate_export_inputs(self, prof: str) -> Optional[str]:
         return export_service.validate_export_inputs_for_profile(self, prof)

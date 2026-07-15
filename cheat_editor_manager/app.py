@@ -44,13 +44,14 @@ from .profiles import (
     profile_template_path,
     uses_id_layout,
 )
-from .services import theme_service
+from .services import theme_service, update_service
 from .ui.dialogs.help_links_dialog import open_help_links as open_help_links_dialog
 from .ui.dialogs.retroarch_cores_dialog import (
     manage_retroarch_cores as manage_retroarch_cores_dialog,
 )
 from .ui.dialogs.settings_dialog import open_settings as open_settings_dialog
 from .ui.dialogs.templates_dialog import open_templates as open_templates_dialog
+from .ui.dialogs.update_dialog import show_update_available
 from .ui.panels.action_bar import build_action_bar
 from .ui.panels.editor_panel import build_editor_panel
 from .ui.panels.editor_panel import clear_editor as clear_editor_text
@@ -62,12 +63,7 @@ from .ui.panels.editor_panel import undo as undo_editor_action
 from .ui.panels.header_panel import build_header
 from .ui.panels.helper_panel import build_helper_panel
 from .ui.panels.helper_panel import refresh_profile_info as refresh_helper_profile_info
-from .ui.panels.helper_panel import refresh_target_cards as refresh_helper_target_cards
-from .ui.panels.helper_panel import show_atmosphere_layout as show_helper_atmosphere_layout
 from .ui.panels.helper_panel import show_core_layout as show_helper_core_layout
-from .ui.panels.helper_panel import show_generic_layout as show_helper_generic_layout
-from .ui.panels.helper_panel import show_switch_layout as show_helper_switch_layout
-from .ui.panels.helper_panel import show_titleid_layout as show_helper_titleid_layout
 from .ui.panels.profile_panel import build_profile_controls
 from .ui.panels.profile_panel import change_export_root
 from .ui.panels.profile_panel import open_export_root as open_export_root_for_app
@@ -88,9 +84,16 @@ class App(RetroarchCoreActionsMixin, ExportFileActionsMixin):
     STARTUP_MIN_USABLE_WIDTH = 900
     STARTUP_MIN_USABLE_HEIGHT = 600
 
-    def __init__(self, *, root: tk.Tk | None = None):
+    def __init__(
+        self,
+        *,
+        root: tk.Tk | None = None,
+        enable_update_check: bool = True,
+    ):
         configure_tcl_environment()
         self._startup_warnings: list[str] = []
+        self._update_check_after = None
+        self._update_dialog = None
         self.prefs = load_prefs()
         self._audit_retroarch_cores()
         self._set_windows_app_id()
@@ -125,6 +128,12 @@ class App(RetroarchCoreActionsMixin, ExportFileActionsMixin):
         self._apply_startup_warnings()
         self.apply_theme()
         self.refresh_profile_info()
+        if enable_update_check:
+            self._update_check_after = update_service.schedule_update_check(
+                self.root,
+                APP_VERSION,
+                self._notify_update_available,
+            )
 
     def _default_window_size(self) -> tuple[int, int]:
         return self.DEFAULT_WINDOW_WIDTH, self.DEFAULT_WINDOW_HEIGHT
@@ -389,72 +398,6 @@ class App(RetroarchCoreActionsMixin, ExportFileActionsMixin):
     def effective_colors(self) -> dict:
         return theme_service.effective_colors(self.prefs)
 
-    @staticmethod
-    def _normalize_hex_color(value: str, fallback: str = "#000000") -> str:
-        return theme_service.normalize_hex_color(value, fallback)
-
-    @classmethod
-    def _relative_luminance(cls, color: str) -> float:
-        return theme_service.relative_luminance(color)
-
-    @classmethod
-    def _contrast_ratio(cls, fg: str, bg: str) -> float:
-        return theme_service.contrast_ratio(fg, bg)
-
-    @classmethod
-    def _blend_colors(cls, start: str, end: str, amount: float) -> str:
-        return theme_service.blend_colors(start, end, amount)
-
-    @classmethod
-    def _ensure_text_contrast(
-        cls,
-        bg: str,
-        *,
-        preferred: Optional[str] = None,
-        light: str = "#fff8eb",
-        dark: str = "#231b15",
-        minimum: float = 4.5,
-    ) -> str:
-        return theme_service.ensure_text_contrast(
-            bg,
-            preferred=preferred,
-            light=light,
-            dark=dark,
-            minimum=minimum,
-        )
-
-    @classmethod
-    def _selection_palette(
-        cls, accent: str, preferred_text: str = "#ffffff"
-    ) -> tuple[str, str]:
-        return theme_service.selection_palette(accent, preferred_text)
-
-    @classmethod
-    def _button_palette(
-        cls,
-        bg: str,
-        surface_bg: str,
-        preferred_text: str,
-        *,
-        minimum: float = 4.5,
-        disabled_minimum: float = 3.0,
-    ) -> dict:
-        return theme_service.button_palette(
-            bg,
-            surface_bg,
-            preferred_text,
-            minimum=minimum,
-            disabled_minimum=disabled_minimum,
-        )
-
-    @classmethod
-    def _sanitize_theme_colors(cls, colors: dict, defaults: dict) -> dict:
-        return theme_service.sanitize_theme_colors(colors, defaults)
-
-    @staticmethod
-    def _readable_text_color(bg: str) -> str:
-        return theme_service.readable_text_color(bg)
-
     def toggle_mode(self):
         self.prefs["mode"] = "dark" if self.prefs.get("mode") == "light" else "light"
         save_prefs(self.prefs)
@@ -463,20 +406,12 @@ class App(RetroarchCoreActionsMixin, ExportFileActionsMixin):
     def apply_theme(self):
         return apply_theme_to_app(self)
 
-    def _show_tid_bid(self, show: bool):
-        return show_helper_switch_layout(self, show)
-
-    def _show_titleid_layout(self, show: bool):
-        return show_helper_titleid_layout(self, show)
+    def _notify_update_available(self, release) -> None:
+        self.status.set(f"Update available: version {release.display_version}")
+        show_update_available(self, APP_VERSION, release)
 
     def _show_core(self, show: bool):
         return show_helper_core_layout(self, show)
-
-    def _show_generic_layout(self, show: bool):
-        return show_helper_generic_layout(self, show)
-
-    def _show_atmosphere_layout(self, show: bool):
-        return show_helper_atmosphere_layout(self, show)
 
     def _is_atmosphere_profile(self, prof: str, info: Optional[dict] = None) -> bool:
         return is_atmosphere_profile(self.prefs, prof, info)
@@ -495,9 +430,6 @@ class App(RetroarchCoreActionsMixin, ExportFileActionsMixin):
 
     def _profile_template_path(self, prof: str, info: dict) -> str:
         return profile_template_path(self.prefs, prof, info, self.core_var.get())
-
-    def _refresh_target_cards(self, prof: str, info: dict) -> None:
-        return refresh_helper_target_cards(self, prof, info)
 
     def refresh_profile_info(self):
         return refresh_helper_profile_info(self)

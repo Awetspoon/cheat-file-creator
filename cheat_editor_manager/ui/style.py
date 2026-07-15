@@ -12,9 +12,6 @@ FONT_HEADER_SUBTITLE = ("Consolas", 8)
 FONT_STATUS = ("Consolas", 9, "bold")
 FONT_MARK_FALLBACK = ("Consolas", 12, "bold")
 
-PAD_PAGE_X = 12
-PAD_PAGE_TOP = 12
-PAD_ROW = 8
 PAD_TIGHT = 6
 
 PANEL_OUTER_PAD_X = 10

@@ -2,7 +2,7 @@
 
 ![Cheat Editor Manager Tool](assets/app-fullscreen.png)
 
-![Version](https://img.shields.io/badge/version-1.3.6-blue)
+![Version](https://img.shields.io/badge/version-1.4.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -12,9 +12,22 @@ It is built for users who already have cheat text and want a cleaner way to load
 
 ## Download
 
-Download the latest Windows build from the releases page:
+For normal use, download the ready-built Windows program. Python is not required.
 
 [Latest Release](https://github.com/Awetspoon/cheat_editor_manager_tool/releases/latest)
+
+1. Open the latest release link above.
+2. Expand **Assets** if GitHub has collapsed the download list.
+3. Download **`cheat_editor_manager_tool.exe`**.
+4. Open the EXE to start the app. No installer or setup process is required.
+
+Only download the EXE from this official repository. The current build is not
+code-signed, so Windows may show a SmartScreen warning on first launch.
+
+On a normal startup, the app checks GitHub for the latest published full release in
+the background. No GitHub account or API key is needed. If a newer version exists,
+the app shows **View Release** and **Later** options. It never downloads or installs
+an update automatically, and an unavailable internet connection does not stop the app.
 
 ## What The Program Does
 
@@ -27,6 +40,7 @@ Download the latest Windows build from the releases page:
 - Saves reusable cheat snippets as templates
 - Saves cheat source websites in Help Links
 - Keeps custom emulator profiles separate from built-in CFW profiles
+- Notifies you when a newer published GitHub release is available
 
 ## Quick Start
 
@@ -95,7 +109,7 @@ If the file path does not contain enough information, the app leaves the fields 
 
 - It does not download cheats automatically.
 - It does not inject cheats into games, consoles, or emulators.
-- It does not require accounts, cloud sync, API keys, or online services.
+- Its editing and export features do not require accounts, cloud sync, API keys, or an internet connection.
 - It does not replace emulator-specific cheat validation tools.
 
 ## User Data

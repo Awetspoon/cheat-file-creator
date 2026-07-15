@@ -17,7 +17,7 @@ class AppSmokeTests(unittest.TestCase):
         self.assertTrue(APP_NAME)
         self.assertTrue(APP_VERSION)
         configure_tcl_environment()
-        self.assertGreater(App._contrast_ratio("#ffffff", "#000000"), 10)
+        self.assertGreater(theme_service.contrast_ratio("#ffffff", "#000000"), 10)
         self.assertEqual(theme_service.normalize_hex_color("#ABCDEF"), "#abcdef")
 
     def test_startup_window_uses_standard_non_fullscreen_size(self):

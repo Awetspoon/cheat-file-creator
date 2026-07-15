@@ -19,7 +19,7 @@ def main() -> None:
     if smoke_exit:
         root = create_app_root()
         root.geometry(SMOKE_ROOT_GEOMETRY)
-    app = App(root=root)
+    app = App(root=root, enable_update_check=not smoke_exit)
     if smoke_exit:
         app.root.update_idletasks()
         app.root.update()

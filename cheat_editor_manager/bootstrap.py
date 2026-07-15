@@ -4,16 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-
-def _as_tcl_runtime_path(path: Path) -> str:
-    resolved = str(path.resolve())
-    if os.name != "nt":
-        return resolved
-    if resolved.startswith("\\\\?\\"):
-        return resolved
-    if resolved.startswith("\\\\"):
-        return "\\\\?\\UNC\\" + resolved.lstrip("\\")
-    return "\\\\?\\" + resolved
+from .resources import tk_file_path
 
 
 def configure_tcl_environment() -> None:
@@ -31,5 +22,5 @@ def configure_tcl_environment() -> None:
     if not tcl_dir.exists() or not tk_dir.exists():
         return
 
-    os.environ["TCL_LIBRARY"] = _as_tcl_runtime_path(tcl_dir)
-    os.environ["TK_LIBRARY"] = _as_tcl_runtime_path(tk_dir)
+    os.environ["TCL_LIBRARY"] = tk_file_path(tcl_dir)
+    os.environ["TK_LIBRARY"] = tk_file_path(tk_dir)

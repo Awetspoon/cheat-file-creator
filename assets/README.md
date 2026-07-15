@@ -12,6 +12,7 @@ This folder contains runtime images and retained brand-source files for Cheat Ed
 The runtime header intentionally uses `mark-48.png` plus code-native text.
 Do not reintroduce `wordmark-360.png`, `logo-header.png`, or watermark
 images into the top-left header.
+Only the four runtime assets above are bundled into the Windows executable.
 
 ## README Screenshot
 
